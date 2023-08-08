@@ -53,28 +53,27 @@ app.get("/api/poems", async (req, res) => {
 app.get("/api/poems/:id", async (req, res) => {
   console.log({ requestParams: req.params, requestQuery: req.query });
   try {
-    const { id: peomId } = req.params;
+    const { id: poemId } = req.params;
     console.log(poemId);
     const poem = await Poem.findById(poemId);
-    console.log(customer);
-    if (!customer) {
-      res.status(404).json({ error: "user Not Found" });
+    if (!poem) {
+      res.status(404).json({ error: "poem Not Found" });
     } else {
-      res.json({ customer });
+      res.json({ poem });
     }
   } catch (e) {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
 
-app.post("/api/customers", async (req, res) => {
+app.post("/api/poems", async (req, res) => {
   console.log(req.body);
-  const customer = new Customer(req.body);
+  const poem = new Poem(req.body);
 
   try {
     console.log(req.body);
-    await customer.save();
-    res.status(201).json({ customer });
+    await poem.save();
+    res.status(201).json({ poem });
   } catch (e) {
     console.log(e);
     res.status(400).json({ error: e.messege });
@@ -129,10 +128,10 @@ app.patch("/api/orders/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/customers/:id", async (req, res) => {
+app.delete("/api/poems/:id", async (req, res) => {
   try {
-    const customerId = req.params.id;
-    const result = await Customer.deleteOne({ _id: customerId });
+    const poemId = req.params.id;
+    const result = await Poem.deleteOne({ _id: poemId });
     res.json({ deletedCount: result.deletedCount });
   } catch (e) {
     res.status(500).json({ error: e.messege });
