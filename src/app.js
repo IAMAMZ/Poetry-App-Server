@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Poem = require("./models/Poem");
+const Poem = require("../models/Poem");
 
 const cors = require("cors");
 
@@ -18,38 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 const connection = process.env.CONNECTION;
 
-app.get("/tshirt", (req, res) => {
-  res.status(200).send({
-    tshirt: "👕",
-    size: "medium",
-  });
-});
-
-app.post("/tshirt/:id", (req, res) => {
-  const { id } = req.params;
-  const { logo } = req.body;
-
-  if (!logo) {
-    res.status(418).send({ messege: "we need a logo" });
-  }
-  res.send({
-    tshirt: `👕 with your ${logo} and ID of ${id}`,
-  });
-});
-
-app.get("/", (req, res) => {
-  res.send("welcome");
-});
-
-app.get("/api/poems", async (req, res) => {
-  try {
-    const result = await Poem.find();
-    res.status(200).json({ poems: result });
-  } catch (e) {
-    res.status(500).json({ error: e.messege });
-  }
-});
-
+app.use("/api/poems", require("../routes/api/poems"));
 app.get("/api/poems/:id", async (req, res) => {
   console.log({ requestParams: req.params, requestQuery: req.query });
   try {
