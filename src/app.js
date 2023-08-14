@@ -20,6 +20,8 @@ const connection = process.env.CONNECTION;
 
 app.use("/api/poems", require("../routes/api/poems"));
 app.use("/api/poems/:id", require("../routes/api/poems"));
+app.use("/login", require("../routes/login"));
+app.use("/register", require("../routes/register"));
 
 app.put("/api/customers/:id", async (req, res) => {
   try {

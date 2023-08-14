@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   username: String,
-  pwd: String,
+  password: String,
+  refreshToken: String,
   poems: [{ type: mongoose.Schema.Types.ObjectId, ref: "Poem" }],
 });
 
