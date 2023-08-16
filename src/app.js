@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Poem = require("../models/Poem");
+const cookieParser = require("cookie-parser");
 
 const cors = require("cors");
 
@@ -13,6 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
 
@@ -22,6 +24,7 @@ app.use("/api/poems", require("../routes/api/poems"));
 app.use("/api/poems/:id", require("../routes/api/poems"));
 app.use("/login", require("../routes/login"));
 app.use("/register", require("../routes/register"));
+app.use("/refresh", require("../routes/refresh"));
 
 app.put("/api/customers/:id", async (req, res) => {
   try {
