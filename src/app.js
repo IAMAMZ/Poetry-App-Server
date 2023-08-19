@@ -25,6 +25,7 @@ app.use("/api/poems/:id", require("../routes/api/poems"));
 app.use("/login", require("../routes/login"));
 app.use("/register", require("../routes/register"));
 app.use("/refresh", require("../routes/refresh"));
+app.use("/logout", require("../routes/logout"));
 
 app.put("/api/customers/:id", async (req, res) => {
   try {
