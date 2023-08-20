@@ -3,12 +3,12 @@ const router = express.Router();
 const poemsController = require("../../controllers/poemsController");
 
 router
-  .route("/")
+  .route("/:username")
   .get(poemsController.getAllPoems)
   .post(poemsController.postPoem);
 
 router
-  .route("/:id")
+  .route("/:username/:poemId")
   .get(poemsController.getPoemById)
   .delete(poemsController.deletePoem);
 

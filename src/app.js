@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Poem = require("../models/Poem");
 const cookieParser = require("cookie-parser");
+const verifyJWT = require("../middleware/verifyJwt");
 
 const cors = require("cors");
 
@@ -20,12 +21,15 @@ const PORT = process.env.PORT || 3000;
 
 const connection = process.env.CONNECTION;
 
-app.use("/api/poems", require("../routes/api/poems"));
-app.use("/api/poems/:id", require("../routes/api/poems"));
 app.use("/login", require("../routes/login"));
 app.use("/register", require("../routes/register"));
 app.use("/refresh", require("../routes/refresh"));
 app.use("/logout", require("../routes/logout"));
+
+// below routes are protected
+app.use(verifyJWT);
+
+app.use("/api/poems", require("../routes/api/poems"));
 
 app.put("/api/customers/:id", async (req, res) => {
   try {

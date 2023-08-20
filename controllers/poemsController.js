@@ -1,10 +1,20 @@
 const mongoose = require("mongoose");
 const Poem = require("../models/Poem");
+const User = require("../models/User");
 
 const getAllPoems = async (req, res) => {
+  console.log("get all poems executed");
+  const paramsUsername = req.params.username;
+  const jwtUsername = req.user;
+
+  console.log("the users are :  ", paramsUsername, jwtUsername);
+
+  if (paramsUsername != jwtUsername) {
+    return res.sendStatus(401); //unauthorized
+  }
   try {
-    const result = await Poem.find();
-    res.status(200).json({ poems: result });
+    const result = await User.findOne({ username: jwtUsername });
+    res.status(200).json({ poems: result.poems });
   } catch (e) {
     res.status(500).json({ error: e.messege });
   }
