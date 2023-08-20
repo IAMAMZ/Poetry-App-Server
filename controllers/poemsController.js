@@ -2,21 +2,29 @@ const mongoose = require("mongoose");
 const Poem = require("../models/Poem");
 const User = require("../models/User");
 
-const getAllPoems = async (req, res) => {
-  console.log("get all poems executed");
+const checkParamUser = (req, res) => {
   const paramsUsername = req.params.username;
   const jwtUsername = req.user;
-
-  console.log("the users are :  ", paramsUsername, jwtUsername);
-
   if (paramsUsername != jwtUsername) {
-    return res.sendStatus(401); //unauthorized
+    res.sendStatus(401);
+    return [paramsUsername, jwtUsername, false]; //unauthorized
   }
-  try {
-    const result = await User.findOne({ username: jwtUsername });
-    res.status(200).json({ poems: result.poems });
-  } catch (e) {
-    res.status(500).json({ error: e.messege });
+  return [paramsUsername, jwtUsername, true];
+};
+
+const getAllPoems = async (req, res) => {
+  const [paramsUsername, jwtUsername, IsAuthorized] = checkParamUser(req, res);
+
+  if (IsAuthorized) {
+    try {
+      const result = await User.findOne({ username: jwtUsername }).populate(
+        "poems"
+      );
+      res.status(200).json({ poems: result.poems });
+    } catch (e) {
+      res.status(500).json({ error: e });
+      console.log(e);
+    }
   }
 };
 
@@ -37,15 +45,33 @@ const getPoemById = async (req, res) => {
 };
 
 const postPoem = async (req, res) => {
-  const poem = new Poem(req.body);
+  const [paramsUsername, jwtUsername, IsAuthorized] = checkParamUser(req, res);
 
-  try {
-    console.log(req.body);
-    await poem.save();
-    res.status(201).json({ poem });
-  } catch (e) {
-    console.log(e);
-    res.status(400).json({ error: e.messege });
+  if (IsAuthorized) {
+    try {
+      // Check if the poem already exists based on its title and author
+      let poem = await Poem.findOne({
+        title: req.body.title,
+        author: req.body.author,
+      });
+
+      // If the poem doesn't exist, create and save it
+      if (!poem) {
+        poem = new Poem(req.body);
+        await poem.save();
+      }
+
+      // Find the user by their username and push the poem ObjectId into their poems array
+      await User.findOneAndUpdate(
+        { username: jwtUsername },
+        { $addToSet: { poems: poem._id } } // $addToSet ensures no duplicate ObjectIds
+      );
+
+      res.status(201).json({ poem });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ error: e.message });
+    }
   }
 };
 
