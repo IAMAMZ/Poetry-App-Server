@@ -4,12 +4,8 @@ const Poem = require("../models/Poem");
 const cookieParser = require("cookie-parser");
 const verifyJWT = require("../middleware/verifyJwt");
 const cors = require("cors");
+const credentials = require("../middleware/credentials");
 const corsOptions = require("../config/corsOptions");
-
-app.use(credentials);
-
-//cors error
-app.use(cors(corsOptions));
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -17,10 +13,12 @@ if (process.env.NODE_ENV !== "production") {
 mongoose.set("strictQuery", false);
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(credentials);
+//cors error
+app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3000;
 
