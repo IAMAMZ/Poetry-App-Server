@@ -3,8 +3,13 @@ const mongoose = require("mongoose");
 const Poem = require("../models/Poem");
 const cookieParser = require("cookie-parser");
 const verifyJWT = require("../middleware/verifyJwt");
-
 const cors = require("cors");
+const corsOptions = require("../config/corsOptions");
+
+app.use(credentials);
+
+//cors error
+app.use(cors(corsOptions));
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
