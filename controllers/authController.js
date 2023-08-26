@@ -9,6 +9,7 @@ const path = require("path");
 
 const handleLogin = async (req, res) => {
   const { user, pwd } = req.body;
+  console.log(user, pwd);
   if (!user || !pwd) {
     return res
       .status(400)
@@ -23,9 +24,11 @@ const handleLogin = async (req, res) => {
   const match = await bycrypt.compare(pwd, foundUser.password);
 
   if (match) {
+    const roles = Object.values(foundUser.roles);
+    console.log("matched");
     //create JWT
     const accessToken = jwt.sign(
-      { UserInfo: { username: foundUser.username } },
+      { UserInfo: { username: foundUser.username, roles: roles } },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "60s" }
     );
@@ -46,8 +49,10 @@ const handleLogin = async (req, res) => {
       secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.json({ accessToken });
+    console.log("we should send status");
+    return res.status(200).json({ accessToken });
   } else {
+    console.log("unmatch");
     res.sendStatus(401);
   }
 };

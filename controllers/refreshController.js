@@ -11,17 +11,19 @@ const handleRefreshToken = async (req, res) => {
   const { user, pwd } = req.body;
 
   const foundUser = await User.findOne({ username: user });
-  console.log(foundUser);
+
   if (!foundUser) {
     console.log("second 403 executed");
     return res.sendStatus(403); //send Forbidden
   }
+  Object.values(foundUser.roles);
+
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
     if (err || foundUser.username !== decoded.username) {
       return res.sendStatus(403);
     }
     const accessToken = jwt.sign(
-      { Userinfo: { username: decoded.username } },
+      { Userinfo: { username: decoded.username, roles: roles } },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "30s" }
     );
