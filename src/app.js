@@ -33,6 +33,7 @@ app.use("/logout", require("../routes/logout"));
 app.use(verifyJWT);
 
 app.use("/api/poems", require("../routes/api/poems"));
+app.use("/api/words", require("../routes/api/words"));
 
 app.put("/api/customers/:id", async (req, res) => {
   try {
