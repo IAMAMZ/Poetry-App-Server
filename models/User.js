@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     },
   },
   poems: [{ type: mongoose.Schema.Types.ObjectId, ref: "Poems" }],
+  words: [{ type: mongoose.Schema.Types.ObjectId, ref: "Words" }],
 });
 
 module.exports = mongoose.model("User", userSchema);
