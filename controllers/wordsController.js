@@ -20,7 +20,7 @@ const getAllWords = async (req, res) => {
       const result = await User.findOne({ username: jwtUsername }).populate(
         "words"
       );
-      res.status(200).json({ poems: result.words });
+      res.status(200).json({ words: result.words });
     } catch (e) {
       res.status(500).json({ error: e });
       console.log(e);
@@ -29,6 +29,7 @@ const getAllWords = async (req, res) => {
 };
 
 const postWord = async (req, res) => {
+  console.log("post word fires");
   const [paramsUsername, jwtUsername, IsAuthorized] = checkParamUser(req, res);
 
   if (IsAuthorized) {
@@ -39,6 +40,16 @@ const postWord = async (req, res) => {
       });
 
       // If the poem doesn't exist, create and save it
+
+      let meaning = [];
+      for (let i = 0; i < req.body.meanings.length; i++) {
+        const myWord = req.body.meanings[i];
+        if (typeof myWord === "string" || myWord instanceof String) {
+          meaning.push(myWord);
+        }
+      }
+      req.body.meanings = meaning;
+      console.log(req.body.meanings);
       if (!word) {
         word = new Word(req.body);
         await word.save();

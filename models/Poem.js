@@ -6,7 +6,7 @@ const poemSchema = new mongoose.Schema({
     required: true,
   },
   author: String,
-  lines: [String],
+  lines: { type: [String], required: true },
 });
 
 module.exports = mongoose.model("Poems", poemSchema);
