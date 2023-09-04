@@ -85,4 +85,40 @@ const deletePoem = async (req, res) => {
   }
 };
 
-module.exports = { getAllPoems, getPoemById, postPoem, deletePoem };
+const deletePoemFromUser = async (req, res) => {
+  const [paramsUsername, jwtUsername, IsAuthorized] = checkParamUser(req, res);
+
+  if (IsAuthorized) {
+    try {
+      // Check if the poem exists based on its title and author
+      let poem = await Poem.findOne({
+        title: req.body.title,
+        author: req.body.author,
+      });
+
+      // If the poem doesn't exist, return an error
+      if (!poem) {
+        return res.status(404).json({ error: "Poem not found" });
+      }
+
+      // Remove the poem ObjectId from the user's poems array
+      await User.findOneAndUpdate(
+        { username: jwtUsername },
+        { $pull: { poems: poem._id } }
+      );
+
+      res.status(200).json({ message: "Poem removed from user successfully" });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ error: e.message });
+    }
+  }
+};
+
+module.exports = {
+  getAllPoems,
+  getPoemById,
+  postPoem,
+  deletePoem,
+  deletePoemFromUser,
+};
