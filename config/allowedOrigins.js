@@ -1,7 +1,6 @@
 const allowedOrigins = [
-  "http://localhost:3500",
-  "http://localhost:3006",
-  "http://localhost:3000",
+"https://poetry-35sl.onrender.com",
 ];
+
 
 module.exports = allowedOrigins;
