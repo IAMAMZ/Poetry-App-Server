@@ -46,7 +46,6 @@ const getPoemById = async (req, res) => {
 
 const postPoem = async (req, res) => {
   const [paramsUsername, jwtUsername, IsAuthorized] = checkParamUser(req, res);
-
   if (IsAuthorized) {
     try {
       // Check if the poem already exists based on its title and author
