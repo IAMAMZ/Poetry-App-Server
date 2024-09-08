@@ -113,11 +113,37 @@ const deletePoemFromUser = async (req, res) => {
     }
   }
 };
-
+const get10RandomPoems = async (req, res) => {
+  try {
+    // Get the total count of poems
+    const count = await Poem.countDocuments();
+    
+    // If there are less than 10 poems, return all of them
+    if (count <= 10) {
+      const poems = await Poem.find();
+      return res.status(200).json({ poems });
+    }
+    
+    // Generate 10 unique random indexes
+    const randomIndexes = new Set();
+    while (randomIndexes.size < 10) {
+      randomIndexes.add(Math.floor(Math.random() * count));
+    }
+    
+    // Fetch the poems at these random indexes
+    const poems = await Poem.find().skip(Math.min(...randomIndexes)).limit(10);
+    
+    res.status(200).json({ poems });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "An error occurred while fetching random poems" });
+  }
+};
 module.exports = {
   getAllPoems,
   getPoemById,
   postPoem,
   deletePoem,
   deletePoemFromUser,
+  get10RandomPoems
 };

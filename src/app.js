@@ -6,6 +6,7 @@ const verifyJWT = require("../middleware/verifyJwt");
 const cors = require("cors");
 const credentials = require("../middleware/credentials");
 const corsOptions = require("../config/corsOptions");
+const poemsController= require("../controllers/poemsController")
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -28,7 +29,7 @@ app.use("/login", require("../routes/login"));
 app.use("/register", require("../routes/register"));
 app.use("/refresh", require("../routes/refresh"));
 app.use("/logout", require("../routes/logout"));
-
+app.use("/api/get-poem-of-the-day",poemsController.get10RandomPoems)
 // below routes are protected
 app.use(verifyJWT);
 
